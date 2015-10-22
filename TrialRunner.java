@@ -1,24 +1,19 @@
 //Copyright (c) <2015> <Phillip Blakey>
 import java.util.Random;
 public class TrialRunner {
-	private double min = 0;
-	private double max = 0;
 	private double maxValue = 0;
 	private double minValue = 1;
 	private int trials = 0;
 	private double successes = 0;
 	private double pSuccess = 0;
+	private int numVars;
 	
-	public TrialRunner(double minIn, double maxIn, int trialsIn){
-		this.min = minIn;
-		this.max = maxIn;
+	public TrialRunner(int trialsIn, int numVarsIn){
 		this.trials = trialsIn;
+		this.numVars = numVarsIn;
 	}
-	public double getMax(){
-		return this.max;
-	}
-	public double getMin(){
-		return this.min;
+	public int getNumVars(){
+		return this.numVars;
 	}
 	public double getMaxValue(){
 		return this.maxValue;
@@ -34,10 +29,6 @@ public class TrialRunner {
 	}
 	public double getSuccesses(){
 		return this.successes;
-	}
-	public double randomDouble(Random rand){
-		double randomNum = this.min + (this.max- this.min) * rand.nextDouble();;
-		return randomNum;
 	}
 	public void setProbabilities(){
 		this.pSuccess = ((double)(this.successes)/(double)(this.trials)) * 100.0;
@@ -58,10 +49,10 @@ public class TrialRunner {
 	 * 
 	 */
 	
-	public void run(OneVarFunction oneVarF){
+	public void runOneVar(OneVarFunction oneVarF){
 		Random rand = new Random();
 		Statistics trial = new Statistics();
-		RandomNumGen numGen = new RandomNumGen();
+		RandomNumGen numGen = new RandomNumGen();// needs seed
 		for (int i = 1; i < this.getTrials()+1; i++ ){
 			double randomVar =  numGen.getRandomNum();
 			trial.run(randomVar);
@@ -74,10 +65,42 @@ public class TrialRunner {
 		System.out.println(trial);
 		this.setProbabilities();
 		System.out.println(this);
+		
+	}
+	public void runNVar(NVarFunction nVarF){
+		//Random rand = new Random();
+		
+		RandomNumGen numGen = new RandomNumGen();//needs seed
+		double [] randomVars = new double[this.getNumVars()];
+		for (int i = 1; i < this.getTrials()+1; i++ ){
+			Statistics [] trialStats = new Statistics [this.getNumVars()];
+			for(int j = 0; j < this.getNumVars();j++){
+				double randomVar =  numGen.getRandomNum();
+				randomVars[j] = randomVar;
+				trialStats[j] = new Statistics();
+				trialStats[j].run(randomVars[j]);
+			}
+			double nVarValue = nVarF.Check(randomVars);
+			this.incrementSuccesses(nVarValue);
+			for(int j = 0; j < this.getNumVars();j++){
+				trialStats[j].calculuateStdDev();
+				trialStats[j].calculateVarience();
+				trialStats[j].calculateMean();
+			}
+			//System.out.println(trial);
+
+			
+		}
+		
+		this.setProbabilities();
+		System.out.println(this);
+		
 	}
 	public String toString(){
 		String answer = "The probability of success is " + this.pSuccess + "\n" + 
-				"The probability of failure is " + (100- this.pSuccess) + "\n";	
+				"The probability of failure is " + (100- this.pSuccess) + "\n" +
+				"Successes = "+ this.successes+"\n"+
+				"Pi = " + 4*(successes)/(trials);	
 		return answer;
 	}
 
