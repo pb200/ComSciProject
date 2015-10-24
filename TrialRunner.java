@@ -7,16 +7,24 @@ public class TrialRunner {
 	private double successes = 0;
 	private double pSuccess = 0;
 	private int numVars;
-	
-	public TrialRunner(int trialsIn, int numVarsIn){
+	private long seed;
+	private double pi = 0;
+	public TrialRunner(int trialsIn, int numVarsIn, long seedIn){
 		this.trials = trialsIn;
 		this.numVars = numVarsIn;
+		this.seed = seedIn;
+	}
+	public double getPi(){
+		return this.pi;
 	}
 	public int getNumVars(){
 		return this.numVars;
 	}
 	public double getMaxValue(){
 		return this.maxValue;
+	}
+	public long getSeed(){
+		return this.seed;
 	}
 	public double getMinValue(){
 		return this.minValue;
@@ -33,12 +41,16 @@ public class TrialRunner {
 	public void setProbabilities(){
 		this.pSuccess = ((double)(this.successes)/(double)(this.trials)) * 100.0;
 	}
+	public void setPi(double piIn){
+		this.pi = piIn;
+	}
 	public double getProbabilities(){
 		return this.pSuccess;
 	}
 	public double getSuccessP(){
 		return this.pSuccess;
 	}
+	
 
 	/*
 	 * This method generates a random number using the randomnumgen class,
@@ -52,7 +64,7 @@ public class TrialRunner {
 	public void runOneVar(OneVarFunction oneVarF){
 		Random rand = new Random();
 		Statistics trial = new Statistics();
-		RandomNumGen numGen = new RandomNumGen();// needs seed
+		RandomNumGen numGen = new RandomNumGen(this.getSeed());// needs seed
 		for (int i = 1; i < this.getTrials()+1; i++ ){
 			double randomVar =  numGen.getRandomNum();
 			trial.run(randomVar);
@@ -65,12 +77,12 @@ public class TrialRunner {
 		System.out.println(trial);
 		this.setProbabilities();
 		System.out.println(this);
-		
+		this.pi = 4*(successes)/(trials);
 	}
 	public void runNVar(NVarFunction nVarF){
 		//Random rand = new Random();
 		
-		RandomNumGen numGen = new RandomNumGen();//needs seed
+		RandomNumGen numGen = new RandomNumGen(this.getSeed());
 		double [] randomVars = new double[this.getNumVars()];
 		for (int i = 1; i < this.getTrials()+1; i++ ){
 			Statistics [] trialStats = new Statistics [this.getNumVars()];
@@ -86,6 +98,7 @@ public class TrialRunner {
 				trialStats[j].calculuateStdDev();
 				trialStats[j].calculateVarience();
 				trialStats[j].calculateMean();
+				this.pi = 4*(successes)/(trials);
 			}
 			//System.out.println(trial);
 
