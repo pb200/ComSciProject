@@ -60,4 +60,3 @@ public class Statistics {
 		return output;
 	}
 }
-
