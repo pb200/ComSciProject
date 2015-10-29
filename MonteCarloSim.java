@@ -7,10 +7,14 @@ public class MonteCarloSim implements Runnable{
 	private long seed = 0;
 	private int trials = 0;
 	private int numVars = 0;
+	private static double sumPi = 0;
 	public MonteCarloSim(long seedIn, int trialsIn, int numVarsIn){
 		this.seed = seedIn;
 		this.trials = trialsIn;
 		this.numVars = numVarsIn;
+	}
+	public static double getSumPi(){
+		return sumPi;
 	}
 	 public void run()
 	    {
@@ -30,9 +34,23 @@ public class MonteCarloSim implements Runnable{
 			NVarFunction nVarF = new NVarFunction();
 			final long startTime = System.currentTimeMillis();
 			instance.runNVar(nVarF);
+			for(int j = 0; j < instance.getNumVars();j++){
+				instance.getTrialStat(j).calculuateStdDev();
+				instance.getTrialStat(j).calculateVarience();
+				instance.getTrialStat(j).calculateMean();	
+				
+			}
+			sumPi = sumPi+ 4*(instance.getSuccesses()/instance.getTrials());
 			final long endTime = System.currentTimeMillis();
-			System.out.println("Total execution time: " + (endTime - startTime) + " milliseconds");
-
+			
+			String outputStats = "";
+			for (int i = 0; i < numVars; i++){
+				outputStats = outputStats + "Standard Deviation Var" + i+ ": "+ instance.getTrialStat(numVars -1).getStandardDev() + "\n" +
+						"Varience Var" + i+ ": " + instance.getTrialStat(numVars -1).getVarience() + "\n" + 
+						"Mean Var" + i+ ": "+ instance.getTrialStat(numVars -1).getMean()+"\n";	
+			}
+			System.out.println("Total execution time: " + (endTime - startTime) + " milliseconds" + "\n"+
+			"Pi: " + sumPi + "\n" + outputStats);		
 	      }
 	    }
 }
