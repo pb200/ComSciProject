@@ -8,14 +8,20 @@ public class TrialRunner {
 	private double pSuccess = 0;
 	private int numVars;
 	private long seed;
-	private double pi = 0;
+	private Statistics []trialStats;
 	public TrialRunner(int trialsIn, int numVarsIn, long seedIn){
 		this.trials = trialsIn;
 		this.numVars = numVarsIn;
 		this.seed = seedIn;
+		if(numVarsIn >1){
+		trialStats = new Statistics [this.getNumVars()];
+		for(int j = 0; j < this.getNumVars();j++){
+			trialStats[j] = new Statistics();
+		}
+		}
 	}
-	public double getPi(){
-		return this.pi;
+	public Statistics getTrialStat(int index){
+		return this.trialStats[index];
 	}
 	public int getNumVars(){
 		return this.numVars;
@@ -41,9 +47,6 @@ public class TrialRunner {
 	public void setProbabilities(){
 		this.pSuccess = ((double)(this.successes)/(double)(this.trials)) * 100.0;
 	}
-	public void setPi(double piIn){
-		this.pi = piIn;
-	}
 	public double getProbabilities(){
 		return this.pSuccess;
 	}
@@ -64,7 +67,7 @@ public class TrialRunner {
 	public void runOneVar(OneVarFunction oneVarF){
 		Random rand = new Random();
 		Statistics trial = new Statistics();
-		RandomNumGen numGen = new RandomNumGen(this.getSeed());// needs seed
+		RandomNumGen numGen = new RandomNumGen(this.getSeed());
 		for (int i = 1; i < this.getTrials()+1; i++ ){
 			double randomVar =  numGen.getRandomNum();
 			trial.run(randomVar);
@@ -77,7 +80,6 @@ public class TrialRunner {
 		System.out.println(trial);
 		this.setProbabilities();
 		System.out.println(this);
-		this.pi = 4*(successes)/(trials);
 	}
 	public void runNVar(NVarFunction nVarF){
 		//Random rand = new Random();
@@ -85,28 +87,22 @@ public class TrialRunner {
 		RandomNumGen numGen = new RandomNumGen(this.getSeed());
 		double [] randomVars = new double[this.getNumVars()];
 		for (int i = 1; i < this.getTrials()+1; i++ ){
-			Statistics [] trialStats = new Statistics [this.getNumVars()];
+			
 			for(int j = 0; j < this.getNumVars();j++){
 				double randomVar =  numGen.getRandomNum();
 				randomVars[j] = randomVar;
-				trialStats[j] = new Statistics();
-				trialStats[j].run(randomVars[j]);
+				this.trialStats[j].run(randomVars[j]);
 			}
 			double nVarValue = nVarF.Check(randomVars);
 			this.incrementSuccesses(nVarValue);
-			for(int j = 0; j < this.getNumVars();j++){
-				trialStats[j].calculuateStdDev();
-				trialStats[j].calculateVarience();
-				trialStats[j].calculateMean();
-				this.pi = 4*(successes)/(trials);
-			}
+			
 			//System.out.println(trial);
 
 			
 		}
 		
 		this.setProbabilities();
-		System.out.println(this);
+	//	System.out.println(this);
 		
 	}
 	public String toString(){
