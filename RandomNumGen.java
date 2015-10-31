@@ -3,12 +3,12 @@ import java.util.Random;
 
 
 public class RandomNumGen {
-	//private long seed;
+	private long seed;
 	private Random rand1;
-	public RandomNumGen(){
-		//this.seed = Seed;
+	public RandomNumGen(Long seedIn){
+		this.seed = seedIn;
 		//System.out.println("Making random with seed " + seed);
-		this.rand1 = new Random();
+		this.rand1 = new Random(this.seed);
 		
 	}
 	
