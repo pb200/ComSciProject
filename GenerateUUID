@@ -1,0 +1,33 @@
+import java.util.UUID;
+import java.security.SecureRandom;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+
+public class GenerateUUID {
+  private byte[] seed;
+  public GenerateUUID(int numSeeds) throws NoSuchAlgorithmException{
+	  seed = new byte [numSeeds];
+	  SecureRandom prng = SecureRandom.getInstance("SHA1PRNG");
+	  byte bytes[] = prng.generateSeed(numSeeds);
+	  for(int i =0; i <numSeeds;i++){
+		  seed[i] = bytes[i]; 
+	  }
+
+	   
+
+	    //generate random UUIDs
+	    UUID idOne = UUID.randomUUID();
+	    UUID idTwo = UUID.randomUUID();
+	    log("UUID One: " + idOne);
+	    log("UUID Two: " + idTwo);
+  }
+
+  public byte getSeed(int seedNum){
+	  return this.seed[seedNum];
+  }
+  
+  private static void log(Object aObject){
+    System.out.println( String.valueOf(aObject) );
+  }
+} 
