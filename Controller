@@ -1,0 +1,39 @@
+package com.amazonaws.codesamples.gsg;
+
+import java.awt.Button;
+import java.security.NoSuchAlgorithmException;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
+
+public class Controller {
+	//private int numThreads = 0;
+	//private int numTrials = 0;
+	//@FXML
+	//private Button buttonSetThreads;
+	//@FXML
+	//private TextField numThreadsInput;
+	//@FXML
+	//private Button buttonSetTrials;
+	//@FXML
+	//private TextField numTrialsInput;
+	//@FXML
+	//private Button Simulate;
+	//@FXML
+	//private Text currentNumThreads;
+	//@FXML
+//	private Text currentNumTrials;
+	//public void setNumThreadsClicked(){
+		//numThreads = Integer.parseInt(numThreadsInput.getText());
+		//currentNumThreads.setText(numThreadsInput.getText());
+	//}
+	//public void setNumTrialsClicked(){
+		//numTrials = Integer.parseInt(numTrialsInput.getText());
+		//currentNumTrials.setText(numTrialsInput.getText());
+	//}
+	//public void simulateClicked() throws NoSuchAlgorithmException, InterruptedException{
+	//	MCRunner mCRunner = new MCRunner(numThreads, numTrials, 2);
+	//	mCRunner.runMC();
+	//}
+}
