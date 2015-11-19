@@ -1,3 +1,4 @@
+package com.amazonaws.codesamples.gsg;
 //Copyright (c) <2015> <Phillip Blakey>
 public class Statistics {
 	private double maxValue = 0x0.0000000000001P-1022;
@@ -20,12 +21,15 @@ public class Statistics {
 		if(trialValue< minValue){
 			this.minValue = trialValue;
 		}
-		
+			
+	}
+	public double getTotalPower0(){
+		return this.totalPower0;
 	}
 	public void calculuateStdDev(){
 		this.standardDev = 1/(double)(totalPower0) * Math.sqrt(totalPower0*totalPower2 - Math.pow(totalPower1,2));
 	}
-	public void calculateVarience(){
+	public void calculateVariance(){
 		this.variance = Math.pow(this.standardDev, 2);
 	}
 	public void calculateMean(){
@@ -38,15 +42,18 @@ public class Statistics {
 		return this.minValue;
 	}
 	public double getMean(){
+		this.calculateMean();
 		return this.mean;
 	}
 	public double getStandardDev(){
+		this.calculuateStdDev();
 		return this.standardDev;
 	}
 	public double getSum(){
 		return this.totalPower1;
 	}
-	public double getVarience(){
+	public double getVariance(){
+		this.calculateVariance();
 		return this.variance;
 	}
 	public String toString(){
