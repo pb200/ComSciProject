@@ -1,0 +1,14 @@
+package com.amazonaws.codesamples.gsg;
+
+public class Result {
+	
+	Result()
+	{
+		this.seed = java.util.UUID.randomUUID().getLeastSignificantBits();
+		
+	}
+	public long seed;
+	public double mean;
+	public double std;
+
+}
