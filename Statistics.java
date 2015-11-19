@@ -66,4 +66,10 @@ public class Statistics {
 				"SS: " + this.totalPower2+ "\n";
 		return output;
 	}
+	public double getTotalPower1() {
+		return this.totalPower1;
+	}
+	public double getTotalPower2() {
+		return this.totalPower2;
+	}
 }
