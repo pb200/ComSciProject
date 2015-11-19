@@ -1,56 +1,98 @@
+package com.amazonaws.codesamples.gsg;
+
 //Copyright (c) <2015> <Phillip Blakey>
 import java.util.Timer;
 
-public class MonteCarloSim implements Runnable{
+/*
+ * This class 
+ */
+public class MonteCarloSim implements Runnable {
 	static Timer timer = new Timer();
 	static int seconds = 0;
 	private long seed = 0;
 	private int trials = 0;
 	private int numVars = 0;
-	private static double sumPi = 0;
-	public MonteCarloSim(long seedIn, int trialsIn, int numVarsIn){
+	private double totalExecutionTime = 0;
+	private double[] standardDeviation;
+	private double[] varience;
+	private double[] mean;
+	private double endTime = 0;
+	private double successes = 0;
+
+	public MonteCarloSim(long seedIn, int trialsIn, int numVarsIn) {
 		this.seed = seedIn;
 		this.trials = trialsIn;
 		this.numVars = numVarsIn;
+		standardDeviation = new double[numVarsIn];
+		varience = new double[numVarsIn];
+		mean = new double[numVarsIn];
 	}
-	public static double getSumPi(){
-		return sumPi;
+	public double[] getStdArray() {
+		return this.standardDeviation;
 	}
-	 public void run()
-	    {
-	      {
-	        try
-	        {
-	          Thread.sleep(1000);
-	        }
-	        catch (InterruptedException ie)
-	        {
-	          System.err.println("Interrupted");
-	          return;
-	        }
-	        System.out.println("Thread ID "+Thread.currentThread().getId()+" running");
-	        //Statistics stats= new Statistics();
-			TrialRunner instance = new TrialRunner(this.trials,this.numVars,this.seed);
+
+	public double[] getMeanArray() {
+		return this.mean;
+	}
+
+	public double[] getVarienceArray() {
+		return this.varience;
+	}
+
+	public double getEndTime() {
+		return this.endTime;
+	}
+
+	public double getExcecutionTime() {
+		return this.totalExecutionTime;
+	}
+
+	public double getStandardDeviation(int variableSD) {
+		return this.standardDeviation[variableSD];
+	}
+
+	public double getVarience(int variableV) {
+		return this.varience[variableV];
+	}
+
+	public double getMean(int variableM) {
+		return this.mean[variableM];
+	}
+
+	public double getSuccesses() {
+		return this.successes;
+	}
+
+	public int getNumTrials() {
+		return this.trials;
+	}
+
+	public void run() {
+		{
+			try {
+				Thread.sleep(1000); // TODO (phil) understand this
+			} catch (InterruptedException ie) {
+				System.err.println("Interrupted");
+				return;
+			}
+			System.out.println("Thread ID " + Thread.currentThread().getId() + " running");
+			TrialRunner tRunner = new TrialRunner(this.trials, this.numVars, this.seed);
 			NVarFunction nVarF = new NVarFunction();
 			final long startTime = System.currentTimeMillis();
-			instance.runNVar(nVarF);
-			for(int j = 0; j < instance.getNumVars();j++){
-				instance.getTrialStat(j).calculuateStdDev();
-				instance.getTrialStat(j).calculateVarience();
-				instance.getTrialStat(j).calculateMean();	
-				
+			tRunner.runNVar(nVarF);
+			for (int j = 0; j < tRunner.getNumVars(); j++) {
+				tRunner.getTrialStat(j).calculuateStdDev();
+				tRunner.getTrialStat(j).calculateVariance();
+				tRunner.getTrialStat(j).calculateMean();
+				this.standardDeviation[j] = tRunner.getTrialStat(j).getStandardDev();
+				this.varience[j] = tRunner.getTrialStat(j).getVariance();
+				this.mean[j] = tRunner.getTrialStat(j).getMean();
 			}
-			sumPi = sumPi+ 4*(instance.getSuccesses()/instance.getTrials());
 			final long endTime = System.currentTimeMillis();
-			
-			String outputStats = "";
-			for (int i = 0; i < numVars; i++){
-				outputStats = outputStats + "Standard Deviation Var" + i+ ": "+ instance.getTrialStat(numVars -1).getStandardDev() + "\n" +
-						"Varience Var" + i+ ": " + instance.getTrialStat(numVars -1).getVarience() + "\n" + 
-						"Mean Var" + i+ ": "+ instance.getTrialStat(numVars -1).getMean()+"\n";	
-			}
-			System.out.println("Total execution time: " + (endTime - startTime) + " milliseconds" + "\n"+
-			"Pi: " + sumPi + "\n" + outputStats);		
-	      }
-	    }
+			this.totalExecutionTime = endTime - startTime;
+			this.endTime = endTime;
+			this.successes = tRunner.getSuccesses();
+
+		}
+	}
 }
